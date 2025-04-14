@@ -28,7 +28,7 @@ function BookSearchOverview() {
       </Header>
 
       {/* Results Count */}
-      <div className="mb-4 text-sm text-gray-400">
+      <div className="mb-4 flex justify-end text-sm text-gray-400">
         {resultsCount > 0
           ? `${String(resultsCount)} records found`
           : 'No records yet'}
