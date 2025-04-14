@@ -24,7 +24,7 @@ function BookSearchOverview() {
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-gray-100">
       <Header>
-        <SearchForm onSearch={handleSearch} />
+        <SearchForm onSearch={handleSearch} defaultValue={searchQuery} />
       </Header>
 
       {/* Results Count */}

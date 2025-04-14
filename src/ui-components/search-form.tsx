@@ -1,10 +1,11 @@
 import { Search } from 'lucide-react'
 
 type Properties = {
+  defaultValue: string
   onSearch: (query: string) => void
 }
 
-export function SearchForm({ onSearch }: Properties) {
+export function SearchForm({ defaultValue, onSearch }: Properties) {
   return (
     <form
       onSubmit={(event) => {
@@ -16,6 +17,7 @@ export function SearchForm({ onSearch }: Properties) {
       className="flex w-full items-center space-x-2 lg:w-auto"
     >
       <input
+        defaultValue={defaultValue}
         name="search"
         type="text"
         placeholder="e.g. Dragons, Sherlock Holmes, ..."
