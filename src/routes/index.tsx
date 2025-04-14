@@ -11,22 +11,18 @@ function App() {
         <p>
           Edit <code>src/routes/index.tsx</code> and save to reload.
         </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
+        <div className="bg-bar-500">
+          <a
+            href="https://tanstack.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn TanStack
+          </a>
+        </div>
       </header>
     </div>
   )
