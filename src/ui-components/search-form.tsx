@@ -1,11 +1,11 @@
 import { Search } from 'lucide-react'
 
-type Properties = {
+type Props = {
   defaultValue: string
   onSearch: (query: string) => void
 }
 
-export function SearchForm({ defaultValue, onSearch }: Properties) {
+export function SearchForm({ defaultValue, onSearch }: Props) {
   return (
     <form
       onSubmit={(event) => {

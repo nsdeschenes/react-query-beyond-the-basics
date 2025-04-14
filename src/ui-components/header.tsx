@@ -1,10 +1,10 @@
 import { LibraryBig } from 'lucide-react'
 
-type Properties = {
+type Props = {
   children?: React.ReactNode
 }
 
-export function Header({ children }: Properties) {
+export function Header({ children }: Props) {
   return (
     <div className="mb-6 flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
       <div className="flex items-center space-x-4">
