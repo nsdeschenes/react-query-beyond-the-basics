@@ -20,36 +20,42 @@ function BookSearchOverview() {
       numFound: 13_629,
       docs: [
         {
+          id: '0',
           coverId: '240727',
           authorName: 'J.K. Rowling',
           title: "Harry Potter and the Philosopher's Stone",
           publishYear: 1997,
         },
         {
+          id: '1',
           coverId: '8226196',
           authorName: 'J.R.R. Tolkien',
           title: 'The Hobbit',
           publishYear: 1937,
         },
         {
+          id: '2',
           coverId: '10523361',
           authorName: 'George Orwell',
           title: '1984',
           publishYear: 1949,
         },
         {
+          id: '3',
           coverId: '11169123',
           authorName: 'F. Scott Fitzgerald',
           title: 'The Great Gatsby',
           publishYear: 1925,
         },
         {
+          id: '4',
           coverId: '10958358',
           authorName: 'Mary Shelley',
           title: 'Frankenstein',
           publishYear: 1818,
         },
         {
+          id: '5',
           coverId: '10909258',
           authorName: 'Charlotte Brontë',
           title: 'Jane Eyre',
@@ -69,15 +75,13 @@ function BookSearchOverview() {
         <SearchForm onSearch={handleSearch} defaultValue={searchQuery} />
       </Header>
 
-      {/* Results Count */}
       <div className="mb-4 flex justify-end text-sm text-gray-400">
         {query.data.numFound.toString()} records found
       </div>
 
-      {/* Grid of book records (placeholder cards) */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {query.data.docs.map((book) => (
-          <BookSearchItem key={book.title} {...book} />
+          <BookSearchItem key={book.title} {...book} onClick={() => {}} />
         ))}
       </div>
     </div>
