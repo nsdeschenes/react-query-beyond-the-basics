@@ -1,4 +1,10 @@
-import { Search, SearchCheck, FileWarning, Loader2 } from 'lucide-react'
+import {
+  Search,
+  SearchCheck,
+  FileWarning,
+  Loader2,
+  AlertTriangle,
+} from 'lucide-react'
 
 const SpotIcon = ({
   icon: Icon,
@@ -37,6 +43,17 @@ export function PendingState() {
   return (
     <div className="flex h-64 items-center justify-center">
       <Loader2 className="h-10 w-10 animate-spin text-indigo-400" />
+    </div>
+  )
+}
+
+export function ErrorState({ error }: { error: Error }) {
+  return (
+    <div className="mx-auto mt-10 flex max-w-xl items-start space-x-4 rounded-md border border-red-500 bg-red-950 p-4 text-red-300 shadow-md">
+      <div className="pt-1">
+        <AlertTriangle className="h-6 w-6 text-red-400" />
+      </div>
+      <p className="text-sm leading-relaxed font-medium">{error.message}</p>
     </div>
   )
 }
