@@ -1,21 +1,29 @@
 import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import tseslint, { configs } from 'typescript-eslint'
+// eslint-disable-next-line import-x/default
 import reactHooks from 'eslint-plugin-react-hooks'
 import eslintReact from '@eslint-react/eslint-plugin'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
+import * as pluginImportX from 'eslint-plugin-import-x'
+// eslint-disable-next-line import-x/default
+import tsParser from '@typescript-eslint/parser'
 
 export default tseslint.config(
   eslint.configs.recommended,
-  tseslint.configs.strictTypeChecked,
+  configs.strictTypeChecked,
   pluginQuery.configs['flat/recommended'],
   eslintPluginUnicorn.configs.recommended,
   eslintReact.configs['recommended-type-checked'],
   reactHooks.configs['recommended-latest'],
+  pluginImportX.flatConfigs.recommended,
+  pluginImportX.flatConfigs.typescript,
   {
+    ignores: ['eslint.config.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parser: tsParser,
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
@@ -24,7 +32,7 @@ export default tseslint.config(
   },
   {
     files: ['**/*.js'],
-    extends: [tseslint.configs.disableTypeChecked],
+    extends: [configs.disableTypeChecked],
   },
   {
     files: ['./src/routeTree.gen.ts'],
