@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { SearchForm } from '@/ui-components/search-form'
 import { Header } from '@/ui-components/header'
+import { BookSearchItem } from '@/ui-components/book-search-item'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -13,12 +14,53 @@ function App() {
 
 function BookSearchOverview() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [resultsCount, setResultsCount] = useState(0)
+
+  const query = {
+    data: {
+      numFound: 13_629,
+      docs: [
+        {
+          coverId: '240727',
+          authorName: 'J.K. Rowling',
+          title: "Harry Potter and the Philosopher's Stone",
+          publishYear: 1997,
+        },
+        {
+          coverId: '8226196',
+          authorName: 'J.R.R. Tolkien',
+          title: 'The Hobbit',
+          publishYear: 1937,
+        },
+        {
+          coverId: '10523361',
+          authorName: 'George Orwell',
+          title: '1984',
+          publishYear: 1949,
+        },
+        {
+          coverId: '11169123',
+          authorName: 'F. Scott Fitzgerald',
+          title: 'The Great Gatsby',
+          publishYear: 1925,
+        },
+        {
+          coverId: '10958358',
+          authorName: 'Mary Shelley',
+          title: 'Frankenstein',
+          publishYear: 1818,
+        },
+        {
+          coverId: '10909258',
+          authorName: 'Charlotte Brontë',
+          title: 'Jane Eyre',
+          publishYear: 1847,
+        },
+      ],
+    },
+  }
 
   const handleSearch = (value: string) => {
     setSearchQuery(value)
-    // Simulate a search result count (for now)
-    setResultsCount(42)
   }
 
   return (
@@ -29,22 +71,13 @@ function BookSearchOverview() {
 
       {/* Results Count */}
       <div className="mb-4 flex justify-end text-sm text-gray-400">
-        {resultsCount > 0
-          ? `${String(resultsCount)} records found`
-          : 'No records yet'}
+        {query.data.numFound.toString()} records found
       </div>
 
       {/* Grid of book records (placeholder cards) */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div
-            key={index}
-            className="rounded-xl bg-gray-800 p-4 shadow transition hover:shadow-lg"
-          >
-            <div className="mb-4 h-40 w-full rounded bg-gray-700"></div>
-            <div className="mb-2 h-4 w-3/4 rounded bg-gray-600"></div>
-            <div className="h-4 w-1/2 rounded bg-gray-600"></div>
-          </div>
+        {query.data.docs.map((book) => (
+          <BookSearchItem key={book.title} {...book} />
         ))}
       </div>
     </div>

@@ -31,6 +31,12 @@ export default tseslint.config(
     },
     rules: {
       'unicorn/prevent-abbreviations': 'off',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: false,
+        },
+      ],
     },
   },
   {
