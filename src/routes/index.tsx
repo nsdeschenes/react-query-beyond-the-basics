@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { SearchForm } from '@/ui-components/search-form.tsx'
-import { Header } from '@/ui-components/header.tsx'
+import { SearchForm } from '@/ui-components/search-form'
+import { Header } from '@/ui-components/header'
 
 export const Route = createFileRoute('/')({
   component: App,
