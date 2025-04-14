@@ -1,4 +1,4 @@
-import { Search, SearchCheck, FileWarning } from 'lucide-react'
+import { Search, SearchCheck, FileWarning, Loader2 } from 'lucide-react'
 
 const SpotIcon = ({
   icon: Icon,
@@ -30,5 +30,13 @@ export function NoResultsState() {
       icon={FileWarning}
       label="No results found for your query. Try another search."
     />
+  )
+}
+
+export function PendingState() {
+  return (
+    <div className="flex h-64 items-center justify-center">
+      <Loader2 className="h-10 w-10 animate-spin text-indigo-400" />
+    </div>
   )
 }
