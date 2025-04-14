@@ -60,11 +60,16 @@ const query = {
 }
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState('')
   const [id, setId] = useState<string>()
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-gray-100">
       {id === undefined ? (
-        <BookSearchOverview setId={setId} />
+        <BookSearchOverview
+          setId={setId}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
       ) : (
         <BookDetail id={id} setId={setId} />
       )}
@@ -72,9 +77,15 @@ function App() {
   )
 }
 
-function BookSearchOverview({ setId }: { setId: (id: string) => void }) {
-  const [searchQuery, setSearchQuery] = useState('')
-
+function BookSearchOverview({
+  setId,
+  searchQuery,
+  setSearchQuery,
+}: {
+  setId: (id: string) => void
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+}) {
   const handleSearch = (value: string) => {
     setSearchQuery(value)
   }
@@ -105,7 +116,7 @@ function BookDetail({
   setId,
 }: {
   id: string
-  setId: (id: string) => void
+  setId: (id: string | undefined) => void
 }) {
   const book = query.data.docs.find((book) => book.id === id)
 
@@ -116,6 +127,9 @@ function BookDetail({
         title={book?.title ?? ''}
         description={mockDescription}
         covers={['240727', '240727', '240727']}
+        onBack={() => {
+          setId(undefined)
+        }}
       />
     </div>
   )
