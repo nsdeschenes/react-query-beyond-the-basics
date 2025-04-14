@@ -126,10 +126,29 @@ function BookDetail({
       <BookDetailItem
         title={book?.title ?? ''}
         description={mockDescription}
-        covers={['240727', '240727', '240727']}
+        covers={['9269962', '10513947', '9031121', '8773509', '9269938']}
         onBack={() => {
           setId(undefined)
         }}
+        links={[
+          {
+            title:
+              'Official Book Page - A Game of Thrones (A Song of Ice and Fire, Book One) | George R.R. Martin',
+            url: 'https://georgerrmartin.com/grrm_book/a-game-of-thrones-a-song-of-ice-and-fire-book-one/',
+          },
+          {
+            title: 'Wikipedia - A Game of Thrones',
+            url: 'https://en.wikipedia.org/wiki/A_Game_of_Thrones',
+          },
+          {
+            title: 'A Wiki of Ice and Fire - A Game of Thrones',
+            url: 'https://awoiaf.westeros.org/index.php/A_Game_of_Thrones',
+          },
+          {
+            title: 'TV Tropes - A Game of Thrones (Literature)',
+            url: 'https://tvtropes.org/pmwiki/pmwiki.php/Literature/AGameOfThrones',
+          },
+        ]}
       />
     </div>
   )
