@@ -86,14 +86,10 @@ function BookSearchOverview({
   searchQuery: string
   setSearchQuery: (query: string) => void
 }) {
-  const handleSearch = (value: string) => {
-    setSearchQuery(value)
-  }
-
   return (
     <div>
       <Header>
-        <SearchForm onSearch={handleSearch} defaultValue={searchQuery} />
+        <SearchForm onSearch={setSearchQuery} defaultValue={searchQuery} />
       </Header>
 
       <div className="mb-4 flex justify-end text-sm text-gray-400">
