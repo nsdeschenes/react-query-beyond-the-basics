@@ -71,7 +71,7 @@ function App() {
         )}
       </Header>
       {id === undefined ? (
-        <BookSearchOverview setId={setId} />
+        <BookSearchOverview searchQuery={searchQuery} setId={setId} />
       ) : (
         <BookDetail id={id} setId={setId} />
       )}
@@ -79,7 +79,12 @@ function App() {
   )
 }
 
-function BookSearchOverview({ setId }: { setId: (id: string) => void }) {
+function BookSearchOverview({
+  setId,
+}: {
+  searchQuery: string
+  setId: (id: string) => void
+}) {
   return (
     <div>
       <div className="mb-4 flex justify-end text-sm text-gray-400">
