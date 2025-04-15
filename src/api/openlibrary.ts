@@ -41,6 +41,7 @@ async function getBook(id: string) {
     description?: string
     covers?: ReadonlyArray<number>
     links?: ReadonlyArray<{ title: string; url: string }>
+    authors?: ReadonlyArray<{ author: { key: string } }>
   }>()
 
   return {
@@ -48,5 +49,8 @@ async function getBook(id: string) {
     description: response.description?.replaceAll(String.raw`\r\n`, '\n'),
     covers: response.covers,
     links: response.links,
+    authors: response.authors?.map((author) => ({
+      id: author.author.key,
+    })),
   }
 }
