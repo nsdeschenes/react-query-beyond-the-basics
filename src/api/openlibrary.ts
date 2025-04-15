@@ -2,7 +2,9 @@ import ky from 'ky'
 
 const limit = '6'
 
-export type BookSearchItem = Awaited<ReturnType<typeof getBooks>>[number]
+export type BookSearchItem = Awaited<
+  ReturnType<typeof getBooks>
+>['docs'][number]
 
 async function getBooks({ search }: { search: string }) {
   const params = new URLSearchParams({
@@ -13,8 +15,11 @@ async function getBooks({ search }: { search: string }) {
   })
   const response = await ky
     .get(`https://openlibrary.org/search.json?${params.toString()}`)
-    .json<
-      Array<{
+    .json<{
+      numFound: number
+      start: number
+      offset: number
+      docs: Array<{
         key: string
         title: string
         author_name: [string, ...Array<string>]
@@ -22,15 +27,18 @@ async function getBooks({ search }: { search: string }) {
         first_publish_year: number
         cover_i: number
       }>
-    >()
+    }>()
 
-  return response.map((book) => ({
-    id: book.key,
-    coverId: book.cover_i,
-    authorName: book.author_name[0],
-    title: book.title,
-    publishYear: book.first_publish_year,
-  }))
+  return {
+    ...response,
+    docs: response.docs.map((doc) => ({
+      id: doc.key,
+      coverId: doc.cover_i,
+      authorName: doc.author_name[0],
+      title: doc.title,
+      publishYear: doc.first_publish_year,
+    })),
+  }
 }
 
 export type BookDetailItem = Awaited<ReturnType<typeof getBook>>
