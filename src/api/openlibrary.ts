@@ -32,3 +32,21 @@ async function getBooks({ search }: { search: string }) {
     publishYear: book.first_publish_year,
   }))
 }
+
+export type BookDetailItem = Awaited<ReturnType<typeof getBook>>
+
+async function getBook(id: string) {
+  const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
+    title: string
+    description?: string
+    covers?: ReadonlyArray<number>
+    links?: ReadonlyArray<{ title: string; url: string }>
+  }>()
+
+  return {
+    title: response.title,
+    description: response.description?.replaceAll(String.raw`\r\n`, '\n'),
+    covers: response.covers,
+    links: response.links,
+  }
+}

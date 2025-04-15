@@ -1,13 +1,10 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { CoverImage } from '@/ui-components/cover-image'
+import type { BookDetailItem } from '@/api/openlibrary'
 
-type Props = {
-  title: string
-  description: string
+type Props = BookDetailItem & {
   onBack: () => void
-  covers?: ReadonlyArray<string>
-  links?: ReadonlyArray<{ title: string; url: string }>
 }
 
 export function BookDetailItem({
@@ -35,14 +32,14 @@ export function BookDetailItem({
         {covers && covers.length > 0 && (
           <div className="mb-6 flex space-x-4">
             {covers.slice(0, 5).map((src) => (
-              <CoverImage key={src} id={src} title={src} />
+              <CoverImage key={src} id={String(src)} title={title} />
             ))}
           </div>
         )}
 
         <div className="prose mb-4 max-w-none whitespace-pre-line text-gray-300">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {description.replaceAll(String.raw`\r\n`, '\n')}
+            {description}
           </ReactMarkdown>
         </div>
       </div>
