@@ -60,18 +60,18 @@ const query = {
 }
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [search, setSearch] = useState('')
   const [id, setId] = useState<string>()
 
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-gray-100">
       <Header>
         {id === undefined && (
-          <SearchForm onSearch={setSearchQuery} defaultValue={searchQuery} />
+          <SearchForm onSearch={setSearch} defaultValue={search} />
         )}
       </Header>
       {id === undefined ? (
-        <BookSearchOverview searchQuery={searchQuery} setId={setId} />
+        <BookSearchOverview search={search} setId={setId} />
       ) : (
         <BookDetail id={id} setId={setId} />
       )}
@@ -82,7 +82,7 @@ function App() {
 function BookSearchOverview({
   setId,
 }: {
-  searchQuery: string
+  search: string
   setId: (id: string) => void
 }) {
   return (
