@@ -126,10 +126,11 @@ function BookDetail({
       <BookDetailItem
         title={book?.title ?? ''}
         description={mockDescription}
-        covers={['9269962', '10513947', '9031121', '8773509', '9269938']}
+        covers={[9_269_962, 10_513_947, 9_031_121, 8_773_509, 9_269_938]}
         onBack={() => {
           setId(undefined)
         }}
+        authors={[]}
         links={[
           {
             title:
