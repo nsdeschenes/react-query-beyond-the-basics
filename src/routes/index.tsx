@@ -9,56 +9,6 @@ export const Route = createFileRoute('/')({
   component: App,
 })
 
-const query = {
-  data: {
-    numFound: 13_629,
-    docs: [
-      {
-        id: '0',
-        coverId: 240_727,
-        authorName: 'J.K. Rowling',
-        title: "Harry Potter and the Philosopher's Stone",
-        publishYear: 1997,
-      },
-      {
-        id: '1',
-        coverId: 8_226_196,
-        authorName: 'J.R.R. Tolkien',
-        title: 'The Hobbit',
-        publishYear: 1937,
-      },
-      {
-        id: '2',
-        coverId: 10_523_361,
-        authorName: 'George Orwell',
-        title: '1984',
-        publishYear: 1949,
-      },
-      {
-        id: '3',
-        coverId: 11_169_123,
-        authorName: 'F. Scott Fitzgerald',
-        title: 'The Great Gatsby',
-        publishYear: 1925,
-      },
-      {
-        id: '4',
-        coverId: 10_958_358,
-        authorName: 'Mary Shelley',
-        title: 'Frankenstein',
-        publishYear: 1818,
-      },
-      {
-        id: '5',
-        coverId: 10_909_258,
-        authorName: 'Charlotte Brontë',
-        title: 'Jane Eyre',
-        publishYear: 1847,
-      },
-    ],
-  },
-}
-
 function App() {
   const [search, setSearch] = useState('')
   const [id, setId] = useState<string>()
@@ -85,6 +35,56 @@ function BookSearchOverview({
   search: string
   setId: (id: string) => void
 }) {
+  const query = {
+    data: {
+      numFound: 13_629,
+      docs: [
+        {
+          id: '0',
+          coverId: 240_727,
+          authorName: 'J.K. Rowling',
+          title: "Harry Potter and the Philosopher's Stone",
+          publishYear: 1997,
+        },
+        {
+          id: '1',
+          coverId: 8_226_196,
+          authorName: 'J.R.R. Tolkien',
+          title: 'The Hobbit',
+          publishYear: 1937,
+        },
+        {
+          id: '2',
+          coverId: 10_523_361,
+          authorName: 'George Orwell',
+          title: '1984',
+          publishYear: 1949,
+        },
+        {
+          id: '3',
+          coverId: 11_169_123,
+          authorName: 'F. Scott Fitzgerald',
+          title: 'The Great Gatsby',
+          publishYear: 1925,
+        },
+        {
+          id: '4',
+          coverId: 10_958_358,
+          authorName: 'Mary Shelley',
+          title: 'Frankenstein',
+          publishYear: 1818,
+        },
+        {
+          id: '5',
+          coverId: 10_909_258,
+          authorName: 'Charlotte Brontë',
+          title: 'Jane Eyre',
+          publishYear: 1847,
+        },
+      ],
+    },
+  }
+
   return (
     <div>
       <div className="mb-4 flex justify-end text-sm text-gray-400">
