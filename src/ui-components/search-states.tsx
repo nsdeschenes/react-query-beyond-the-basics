@@ -50,9 +50,7 @@ export function PendingState() {
 export function ErrorState({ error }: { error: Error }) {
   return (
     <div className="mx-auto mt-10 flex max-w-xl items-start space-x-4 rounded-md border border-red-500 bg-red-950 p-4 text-red-300 shadow-md">
-      <div className="pt-1">
-        <AlertTriangle className="h-6 w-6 text-red-400" />
-      </div>
+      <AlertTriangle className="h-6 w-6 text-red-400" />
       <p className="text-sm leading-relaxed font-medium">{error.message}</p>
     </div>
   )
