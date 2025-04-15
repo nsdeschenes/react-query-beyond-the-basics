@@ -6,7 +6,7 @@ export type BookSearchItem = Awaited<
   ReturnType<typeof getBooks>
 >['docs'][number]
 
-async function getBooks({ search }: { search: string }) {
+export async function getBooks({ search }: { search: string }) {
   const params = new URLSearchParams({
     q: search,
     limit,
@@ -43,7 +43,7 @@ async function getBooks({ search }: { search: string }) {
 
 export type BookDetailItem = Awaited<ReturnType<typeof getBook>>
 
-async function getBook(id: string) {
+export async function getBook(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     title: string
     description?: string
@@ -65,7 +65,7 @@ async function getBook(id: string) {
 
 export type Author = Awaited<ReturnType<typeof getAuthor>>
 
-async function getAuthor(id: string) {
+export async function getAuthor(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     personal_name: string
     links?: Array<{ url: string }>
