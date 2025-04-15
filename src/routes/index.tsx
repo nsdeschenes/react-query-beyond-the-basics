@@ -106,18 +106,15 @@ const mockDescription = `***A Game of Thrones*** is the inaugural novel in ***A 
       struggles, and magical elements intertwine.`
 
 function BookDetail({
-  id,
   setId,
 }: {
   id: string
   setId: (id: string | undefined) => void
 }) {
-  const book = query.data.docs.find((book) => book.id === id)
-
   return (
     <div>
       <BookDetailItem
-        title={book?.title ?? ''}
+        title="A Game of Thrones"
         description={mockDescription}
         covers={[9_269_962, 10_513_947, 9_031_121, 8_773_509, 9_269_938]}
         onBack={() => {
