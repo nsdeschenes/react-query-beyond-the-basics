@@ -13,18 +13,21 @@ function App() {
   const [search, setSearch] = useState('')
   const [id, setId] = useState<string>()
 
+  if (id) {
+    return (
+      <div className="min-h-screen bg-gray-900 p-6 text-gray-100">
+        <Header />
+        <BookDetail id={id} setId={setId} />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-gray-100">
       <Header>
-        {id === undefined && (
-          <SearchForm onSearch={setSearch} defaultValue={search} />
-        )}
+        <SearchForm onSearch={setSearch} defaultValue={search} />
       </Header>
-      {id === undefined ? (
-        <BookSearchOverview search={search} setId={setId} />
-      ) : (
-        <BookDetail id={id} setId={setId} />
-      )}
+      <BookSearchOverview search={search} setId={setId} />
     </div>
   )
 }
