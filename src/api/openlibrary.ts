@@ -14,10 +14,10 @@ async function getBooks({ search }: { search: string }) {
   const response = await ky
     .get(`https://openlibrary.org/search.json?${params.toString()}`)
     .json<
-      ReadonlyArray<{
+      Array<{
         key: string
         title: string
-        author_name: readonly [string, ...ReadonlyArray<string>]
+        author_name: [string, ...Array<string>]
         coverId: string
         first_publish_year: number
         cover_i: number
@@ -39,9 +39,9 @@ async function getBook(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     title: string
     description?: string
-    covers?: ReadonlyArray<number>
-    links?: ReadonlyArray<{ title: string; url: string }>
-    authors?: ReadonlyArray<{ author: { key: string } }>
+    covers?: Array<number>
+    links?: Array<{ title: string; url: string }>
+    authors?: Array<{ author: { key: string } }>
   }>()
 
   return {
@@ -51,6 +51,22 @@ async function getBook(id: string) {
     links: response.links,
     authors: response.authors?.map((author) => ({
       id: author.author.key,
+    })),
+  }
+}
+
+export type Author = Awaited<ReturnType<typeof getAuthor>>
+
+async function getAuthor(id: string) {
+  const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
+    personal_name: string
+    links?: Array<{ url: string }>
+  }>()
+
+  return {
+    name: response.personal_name,
+    links: response.links?.map((link) => ({
+      url: link.url,
     })),
   }
 }
