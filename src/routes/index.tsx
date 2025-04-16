@@ -5,6 +5,7 @@ import { Header } from '@/ui-components/header'
 import { BookSearchItem } from '@/ui-components/book-search-item'
 import { BookDetailItem } from '@/ui-components/book-detail-item'
 import { Pagination } from '@/ui-components/pagination'
+import { limit } from '@/api/openlibrary'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -120,7 +121,7 @@ function BookSearchOverview({
       <Pagination
         page={page}
         setPage={setPage}
-        maxPages={Math.ceil(query.data.numFound / 6)}
+        maxPages={Math.ceil(query.data.numFound / limit)}
       />
     </div>
   )
