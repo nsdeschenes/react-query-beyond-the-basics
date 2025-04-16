@@ -55,7 +55,7 @@ export async function getBook(id: string) {
   return {
     title: response.title,
     description: response.description?.replaceAll(String.raw`\r\n`, '\n'),
-    covers: response.covers,
+    covers: response.covers?.filter((cover) => cover > 0),
     links: response.links,
     authors: response.authors?.map((author) => ({
       id: author.author.key,
