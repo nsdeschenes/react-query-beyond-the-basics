@@ -6,6 +6,8 @@ export type BookSearchItem = Awaited<
   ReturnType<typeof getBooks>
 >['docs'][number]
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export async function getBooks({ search }: { search: string }) {
   const params = new URLSearchParams({
     q: search,
@@ -28,6 +30,8 @@ export async function getBooks({ search }: { search: string }) {
         cover_i: number
       }>
     }>()
+
+  await sleep(500)
 
   return {
     ...response,
