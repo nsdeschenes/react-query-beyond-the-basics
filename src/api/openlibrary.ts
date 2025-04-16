@@ -29,8 +29,8 @@ export async function getBooks({
       docs: Array<{
         key: string
         title: string
-        author_name: [string, ...Array<string>]
-        author_key: [string, ...Array<string>]
+        author_name?: Array<string>
+        author_key?: Array<string>
         coverId: string
         first_publish_year: number
         cover_i: number
@@ -44,8 +44,10 @@ export async function getBooks({
     docs: response.docs.map((doc) => ({
       id: doc.key,
       coverId: doc.cover_i,
-      authorName: doc.author_name[0],
-      authorId: `/authors/${doc.author_key[0]}`,
+      authorName: doc.author_name?.[0],
+      authorId: doc.author_key?.[0]
+        ? `/authors/${doc.author_key[0]}`
+        : undefined,
       title: doc.title,
       publishYear: doc.first_publish_year,
     })),
