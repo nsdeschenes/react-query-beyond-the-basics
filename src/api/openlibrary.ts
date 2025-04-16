@@ -49,7 +49,7 @@ export async function getBook(id: string) {
     description?: string
     covers?: Array<number>
     links?: Array<{ title: string; url: string }>
-    authors?: Array<{ author: { key: string } }>
+    authors: [{ author: { key: string } }]
   }>()
 
   return {
@@ -57,9 +57,7 @@ export async function getBook(id: string) {
     description: response.description?.replaceAll(String.raw`\r\n`, '\n'),
     covers: response.covers?.filter((cover) => cover > 0),
     links: response.links,
-    authors: response.authors?.map((author) => ({
-      id: author.author.key,
-    })),
+    author: response.authors[0].author.key,
   }
 }
 
@@ -73,8 +71,8 @@ export async function getAuthor(id: string) {
 
   return {
     name: response.personal_name,
-    links: response.links?.map((link) => ({
+    link: response.links?.map((link) => ({
       url: link.url,
-    })),
+    }))[0]?.url,
   }
 }
