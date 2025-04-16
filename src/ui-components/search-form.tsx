@@ -18,6 +18,7 @@ export function SearchForm({ defaultValue, onSearch }: Props) {
     >
       <input
         defaultValue={defaultValue}
+        autoComplete="off"
         name="search"
         type="text"
         placeholder="e.g. Dragons, Sherlock Holmes, ..."
