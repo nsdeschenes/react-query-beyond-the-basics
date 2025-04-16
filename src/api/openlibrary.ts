@@ -78,6 +78,8 @@ export async function getAuthor(id: string) {
     links?: Array<{ url: string }>
   }>()
 
+  await sleep(1000)
+
   return {
     name: response.personal_name,
     link: response.links?.map((link) => ({

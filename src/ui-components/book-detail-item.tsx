@@ -1,19 +1,23 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { CoverImage } from '@/ui-components/cover-image'
-import type { BookDetailItem } from '@/api/openlibrary'
+import type { Author, BookDetailItem } from '@/api/openlibrary'
 
-type Props = BookDetailItem & {
+type Props = Omit<BookDetailItem, 'author'> & {
   onBack: () => void
+  author?: Author
 }
 
 export function BookDetailItem({
   title,
+  author,
   description,
   links,
   covers,
   onBack,
 }: Props) {
+  const authorName = author?.name ?? '...'
+
   return (
     <div className="mx-auto max-w-3xl">
       <a
@@ -27,7 +31,22 @@ export function BookDetailItem({
         ← Back to search
       </a>
       <div className="rounded-xl bg-gray-800 p-6 text-gray-100 shadow-md">
-        <h2 className="mb-4 text-2xl font-bold text-white">{title}</h2>
+        <h2 className="text-2xl font-bold text-white">{title}</h2>
+
+        <p className="mb-4 text-sm text-gray-400">
+          {author?.link ? (
+            <a
+              href={author.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-400 hover:underline"
+            >
+              {authorName}
+            </a>
+          ) : (
+            authorName
+          )}
+        </p>
 
         {covers && covers.length > 0 && (
           <div className="mb-6 flex space-x-4">
