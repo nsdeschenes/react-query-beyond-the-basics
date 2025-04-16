@@ -123,7 +123,10 @@ function BookDetail({
         onBack={() => {
           setId(undefined)
         }}
-        authors={[]}
+        author={{
+          name: 'George R. R. Martin',
+          link: undefined,
+        }}
         links={[
           {
             title:
