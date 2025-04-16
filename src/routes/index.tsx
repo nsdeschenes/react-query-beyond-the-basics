@@ -4,6 +4,7 @@ import { SearchForm } from '@/ui-components/search-form'
 import { Header } from '@/ui-components/header'
 import { BookSearchItem } from '@/ui-components/book-search-item'
 import { BookDetailItem } from '@/ui-components/book-detail-item'
+import { Pagination } from '@/ui-components/pagination'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
   const [id, setId] = useState<string>()
 
   if (id) {
@@ -27,16 +29,25 @@ function App() {
       <Header>
         <SearchForm onSearch={setSearch} defaultValue={search} />
       </Header>
-      <BookSearchOverview search={search} setId={setId} />
+      <BookSearchOverview
+        search={search}
+        setId={setId}
+        page={page}
+        setPage={setPage}
+      />
     </div>
   )
 }
 
 function BookSearchOverview({
+  page,
+  setPage,
   setId,
 }: {
   search: string
   setId: (id: string) => void
+  page: number
+  setPage: (page: number) => void
 }) {
   const query = {
     data: {
@@ -105,6 +116,12 @@ function BookSearchOverview({
           <BookSearchItem key={book.title} {...book} onClick={setId} />
         ))}
       </div>
+
+      <Pagination
+        page={page}
+        setPage={setPage}
+        maxPages={Math.ceil(query.data.numFound / 6)}
+      />
     </div>
   )
 }
