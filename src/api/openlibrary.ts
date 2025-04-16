@@ -60,7 +60,7 @@ export async function getBook(id: string) {
     description?: string | { value: string }
     covers: Array<number>
     links?: Array<{ title: string; url: string }>
-    authors: [{ author: { key: string } }]
+    authors?: Array<{ author: { key: string } }>
   }>()
 
   await sleep(250)
@@ -77,7 +77,7 @@ export async function getBook(id: string) {
       : undefined),
     covers: response.covers.filter((cover) => cover > 0),
     ...(response.links ? { links: response.links } : undefined),
-    authorId: response.authors[0].author.key,
+    authorId: response.authors?.[0]?.author.key,
   }
 }
 
