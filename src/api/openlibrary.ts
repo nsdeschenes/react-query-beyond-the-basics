@@ -50,15 +50,20 @@ export type BookDetailItem = Awaited<ReturnType<typeof getBook>>
 export async function getBook(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     title: string
-    description?: string
+    description?: string | { value: string }
     covers?: Array<number>
     links?: Array<{ title: string; url: string }>
     authors: [{ author: { key: string } }]
   }>()
 
+  const description =
+    typeof response.description === 'string'
+      ? response.description
+      : response.description?.value
+
   return {
     title: response.title,
-    description: response.description?.replaceAll(String.raw`\r\n`, '\n'),
+    description: description?.replaceAll(String.raw`\r\n`, '\n'),
     covers: response.covers?.filter((cover) => cover > 0),
     links: response.links,
     author: response.authors[0].author.key,
