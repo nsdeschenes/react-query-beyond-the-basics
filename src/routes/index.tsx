@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { SearchForm } from '@/ui-components/search-form'
-import { Header } from '@/ui-components/header'
-import { BookSearchItem } from '@/ui-components/book-search-item'
-import { BookDetailItem } from '@/ui-components/book-detail-item'
-import { Pagination } from '@/ui-components/pagination'
+import { SearchForm } from '@/books/search-form'
+import { Header } from '@/books/header'
+import { BookSearchItem } from '@/books/book-search-item'
+import { BookDetailItem } from '@/books/book-detail-item'
+import { Pagination } from '@/books/pagination'
 import { limit } from '@/api/openlibrary'
 
 export const Route = createFileRoute('/')({
