@@ -144,13 +144,6 @@ function BookDetail({
         title="A Game of Thrones"
         description={mockDescription}
         covers={[9_269_962, 10_513_947, 9_031_121, 8_773_509, 9_269_938]}
-        onBack={() => {
-          setId(undefined)
-        }}
-        author={{
-          name: 'George R. R. Martin',
-          link: undefined,
-        }}
         links={[
           {
             title:
@@ -170,6 +163,13 @@ function BookDetail({
             url: 'https://tvtropes.org/pmwiki/pmwiki.php/Literature/AGameOfThrones',
           },
         ]}
+        author={{
+          name: 'George R. R. Martin',
+          link: undefined,
+        }}
+        onBack={() => {
+          setId(undefined)
+        }}
       />
     </div>
   )
