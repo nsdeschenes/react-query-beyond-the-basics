@@ -8,3 +8,12 @@ Together, we'll build a simple example app and incrementally enhance it with one
 To achieve this, we'll dive into advanced techniques like various forms of prefetching (including integration with route loaders), seeding the query cache, crafting smooth paginated experiences, and even persisting query state through full page reloads using persistence plugins.
 
 Note: You should have prior knowledge about React Query if you attend this workshop.
+
+# Getting Started
+
+To run this application:
+
+```bash
+npm install
+npm run dev
+```
