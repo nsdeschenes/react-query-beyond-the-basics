@@ -5,7 +5,14 @@ import { Header } from '@/books/header'
 import { BookSearchItem } from '@/books/book-search-item'
 import { BookDetailItem } from '@/books/book-detail-item'
 import { Pagination } from '@/books/pagination'
-import { limit } from '@/api/openlibrary'
+import { getAuthor, getBook, getBooks, limit } from '@/api/openlibrary'
+import { skipToken, useQuery } from '@tanstack/react-query'
+import {
+  EmptyState,
+  ErrorState,
+  NoResultsState,
+  PendingState,
+} from '@/books/search-states'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -38,12 +45,16 @@ function App() {
           defaultValue={filter}
         />
       </Header>
-      <BookSearchOverview
-        filter={filter}
-        setId={setId}
-        page={page}
-        setPage={setPage}
-      />
+      {filter ? (
+        <BookSearchOverview
+          filter={filter}
+          setId={setId}
+          page={page}
+          setPage={setPage}
+        />
+      ) : (
+        <EmptyState />
+      )}
     </div>
   )
 }
@@ -52,66 +63,42 @@ function BookSearchOverview({
   page,
   setPage,
   setId,
+  filter,
 }: {
   filter: string
   setId: (id: string) => void
   page: number
   setPage: (page: number) => void
 }) {
-  const query = {
-    data: {
-      numFound: 13_629,
-      docs: [
-        {
-          id: '0',
-          coverId: 240_727,
-          authorName: 'J.K. Rowling',
-          authorId: '/authors/OL73937A',
-          title: "Harry Potter and the Philosopher's Stone",
-          publishYear: 1997,
-        },
-        {
-          id: '1',
-          coverId: 8_226_196,
-          authorName: 'J.R.R. Tolkien',
-          authorId: '/authors/OL26284A',
-          title: 'The Hobbit',
-          publishYear: 1937,
-        },
-        {
-          id: '2',
-          coverId: 10_523_361,
-          authorName: 'George Orwell',
-          authorId: '/authors/OL26320A',
-          title: '1984',
-          publishYear: 1949,
-        },
-        {
-          id: '3',
-          coverId: 11_169_123,
-          authorName: 'F. Scott Fitzgerald',
-          authorId: '/authors/OL26283A',
-          title: 'The Great Gatsby',
-          publishYear: 1925,
-        },
-        {
-          id: '4',
-          coverId: 10_958_358,
-          authorName: 'Mary Shelley',
-          authorId: '/authors/OL26282A',
-          title: 'Frankenstein',
-          publishYear: 1818,
-        },
-        {
-          id: '5',
-          coverId: 10_909_258,
-          authorName: 'Charlotte Brontë',
-          authorId: '/authors/OL26281A',
-          title: 'Jane Eyre',
-          publishYear: 1847,
-        },
-      ],
-    },
+  const query = useQuery({
+    queryKey: ['books', 'list', { filter, page }],
+    /**
+     * Different ways of disabling queries:
+     * 1st way: old way of disabling query - not type safe :c
+     * enabled: !!filter,
+     *
+     * 2nd way: using skipToken also disables the query - but it is type safe c:
+     * queryFn: filter ? () => getBooks({ filter, page }) : skipToken,
+     *
+     * 3rd way: conditionally rendering this component, see above L48-L57
+     */
+    queryFn: () => getBooks({ filter, page }),
+    staleTime: 1000 * 60 * 2, // set staleTime to 2mins
+  })
+
+  if (query.status === 'pending') {
+    if (query.fetchStatus === 'fetching') {
+      return <PendingState />
+    }
+    return <EmptyState />
+  }
+
+  if (query.status === 'error') {
+    return <ErrorState error={query.error} />
+  }
+
+  if (query.data.numFound === 0) {
+    return <NoResultsState />
   }
 
   return (
@@ -135,46 +122,40 @@ function BookSearchOverview({
   )
 }
 
-const mockDescription = `***A Game of Thrones*** is the inaugural novel in ***A Song of Ice and Fire***, an epic
-      series of fantasy novels crafted by the American author **George R. R. Martin**. Published on August 1, 1996, this
-      novel introduces readers to the richly detailed world of Westeros and Essos, where political intrigue, power
-      struggles, and magical elements intertwine.`
-
 function BookDetail({
+  id,
   setId,
 }: {
   id: string
   setId: (id: string | undefined) => void
 }) {
+  const bookQuery = useQuery({
+    queryKey: ['books', 'detail', { id }],
+    queryFn: () => getBook(id),
+    staleTime: 1000 * 60 * 2, // set staleTime to 2mins
+  })
+
+  const authorId = bookQuery?.data?.authorId
+
+  const authorQuery = useQuery({
+    queryKey: ['books', 'author', authorId],
+    queryFn: authorId ? () => getAuthor(authorId) : skipToken,
+    staleTime: 1000 * 60 * 20, // set staleTime to 20mins
+  })
+
+  if (bookQuery.status === 'pending') {
+    return <PendingState />
+  }
+
+  if (bookQuery.status === 'error') {
+    return <ErrorState error={bookQuery.error} />
+  }
+
   return (
     <div>
       <BookDetailItem
-        title="A Game of Thrones"
-        description={mockDescription}
-        covers={[9_269_962, 10_513_947, 9_031_121, 8_773_509, 9_269_938]}
-        links={[
-          {
-            title:
-              'Official Book Page - A Game of Thrones (A Song of Ice and Fire, Book One) | George R.R. Martin',
-            url: 'https://georgerrmartin.com/grrm_book/a-game-of-thrones-a-song-of-ice-and-fire-book-one/',
-          },
-          {
-            title: 'Wikipedia - A Game of Thrones',
-            url: 'https://en.wikipedia.org/wiki/A_Game_of_Thrones',
-          },
-          {
-            title: 'A Wiki of Ice and Fire - A Game of Thrones',
-            url: 'https://awoiaf.westeros.org/index.php/A_Game_of_Thrones',
-          },
-          {
-            title: 'TV Tropes - A Game of Thrones (Literature)',
-            url: 'https://tvtropes.org/pmwiki/pmwiki.php/Literature/AGameOfThrones',
-          },
-        ]}
-        author={{
-          name: 'George R. R. Martin',
-          link: undefined,
-        }}
+        {...bookQuery.data}
+        author={authorQuery.data}
         onBack={() => {
           setId(undefined)
         }}
