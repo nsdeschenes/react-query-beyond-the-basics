@@ -27,7 +27,7 @@ function App() {
     return (
       <div>
         <Header />
-        <BookDetail id={id} setId={setId} />
+        <BookDetail id={id} setId={setId} filter={filter} page={page} />
       </div>
     )
   }
@@ -122,11 +122,54 @@ function BookSearchOverview({
 function BookDetail({
   id,
   setId,
+  filter,
+  page,
 }: {
   id: string
   setId: (id: string | undefined) => void
+  filter: string
+  page: number
 }) {
-  const bookQuery = useQuery(bookQueries.detail(id))
+  const queryClient = useQueryClient()
+
+  const bookQuery = useQuery({
+    ...bookQueries.detail(id),
+    // Initial data isn't the best way to pre-fill the cache with data
+    // because it doesn't know if the query client made the fetch or it
+    // was put in there, and the stale time won't be set to zero so query
+    // won't make a new fetch
+
+    // initialData: () => {
+    //   const bookData = queryClient
+    //     .getQueryData(bookQueries.list(filter, page).queryKey)
+    //     ?.docs?.find((book) => book.id === id)
+
+    //   if (bookData) {
+    //     return {
+    //       title: bookData.title,
+    //       authorId: bookData.authorId,
+    //       covers: [bookData.coverId],
+    //     }
+    //   }
+    // },
+
+    // Place holder data is the better option of the two, if you want to
+    // just show something while fetching the real data, as it's return
+    // value is never actually set into the query cache.
+    placeholderData: () => {
+      const bookData = queryClient
+        .getQueryData(bookQueries.list(filter, page).queryKey)
+        ?.docs?.find((book) => book.id === id)
+
+      if (bookData) {
+        return {
+          title: bookData.title,
+          authorId: bookData.authorId,
+          covers: [bookData.coverId],
+        }
+      }
+    },
+  })
 
   const authorId = bookQuery?.data?.authorId
   const authorQuery = useQuery(bookQueries.author(authorId))
