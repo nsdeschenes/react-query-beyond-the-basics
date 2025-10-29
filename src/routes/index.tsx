@@ -5,8 +5,8 @@ import { Header } from '@/books/header'
 import { BookSearchItem } from '@/books/book-search-item'
 import { BookDetailItem } from '@/books/book-detail-item'
 import { Pagination } from '@/books/pagination'
-import { getAuthor, getBook, getBooks, limit } from '@/api/openlibrary'
-import { skipToken, useQuery } from '@tanstack/react-query'
+import { bookQueries, limit } from '@/api/openlibrary'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   EmptyState,
   ErrorState,
@@ -70,21 +70,8 @@ function BookSearchOverview({
   page: number
   setPage: (page: number) => void
 }) {
-  const query = useQuery({
-    queryKey: ['books', 'list', { filter, page }],
-    /**
-     * Different ways of disabling queries:
-     * 1st way: old way of disabling query - not type safe :c
-     * enabled: !!filter,
-     *
-     * 2nd way: using skipToken also disables the query - but it is type safe c:
-     * queryFn: filter ? () => getBooks({ filter, page }) : skipToken,
-     *
-     * 3rd way: conditionally rendering this component, see above L48-L57
-     */
-    queryFn: () => getBooks({ filter, page }),
-    staleTime: 1000 * 60 * 2, // set staleTime to 2mins
-  })
+  const queryClient = useQueryClient()
+  const query = useQuery(bookQueries.list(filter, page))
 
   if (query.status === 'pending') {
     if (query.fetchStatus === 'fetching') {
@@ -109,7 +96,17 @@ function BookSearchOverview({
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {query.data.docs.map((book) => (
-          <BookSearchItem key={book.id} {...book} onClick={setId} />
+          <BookSearchItem
+            key={book.id}
+            {...book}
+            onClick={setId}
+            onMouseEnter={() => {
+              queryClient.prefetchQuery(bookQueries.detail(book.id))
+            }}
+            onFocus={() => {
+              queryClient.prefetchQuery(bookQueries.detail(book.id))
+            }}
+          />
         ))}
       </div>
 
@@ -129,19 +126,10 @@ function BookDetail({
   id: string
   setId: (id: string | undefined) => void
 }) {
-  const bookQuery = useQuery({
-    queryKey: ['books', 'detail', { id }],
-    queryFn: () => getBook(id),
-    staleTime: 1000 * 60 * 2, // set staleTime to 2mins
-  })
+  const bookQuery = useQuery(bookQueries.detail(id))
 
   const authorId = bookQuery?.data?.authorId
-
-  const authorQuery = useQuery({
-    queryKey: ['books', 'author', authorId],
-    queryFn: authorId ? () => getAuthor(authorId) : skipToken,
-    staleTime: 1000 * 60 * 20, // set staleTime to 20mins
-  })
+  const authorQuery = useQuery(bookQueries.author(authorId))
 
   if (bookQuery.status === 'pending') {
     return <PendingState />

@@ -1,3 +1,4 @@
+import { queryOptions, skipToken } from '@tanstack/react-query'
 import ky from 'ky'
 
 export const limit = 6
@@ -8,13 +9,7 @@ export type BookSearchItem = Awaited<
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function getBooks({
-  filter,
-  page,
-}: {
-  filter: string
-  page: number
-}) {
+async function getBooks({ filter, page }: { filter: string; page: number }) {
   const params = new URLSearchParams({
     q: filter,
     page: String(page),
@@ -58,7 +53,7 @@ export async function getBooks({
 
 export type BookDetailItem = Awaited<ReturnType<typeof getBook>>
 
-export async function getBook(id: string) {
+async function getBook(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     title: string
     description?: string | { value: string }
@@ -87,7 +82,7 @@ export async function getBook(id: string) {
 
 export type Author = Awaited<ReturnType<typeof getAuthor>>
 
-export async function getAuthor(id: string) {
+async function getAuthor(id: string) {
   const response = await ky.get(`https://openlibrary.org${id}.json`).json<{
     personal_name: string
     links?: Array<{ url: string }>
@@ -103,4 +98,51 @@ export async function getAuthor(id: string) {
     name: response.personal_name,
     ...(link ? { link } : undefined),
   }
+}
+
+/**
+ * If you use an object as the first key, order does not
+ * matter when matching, unlike the standard array pattern e.g.
+ * [ 'book', 'list' ]
+ *
+ * You can do more larger scale fuzzy searching, example:
+ * Key 1: [{ entity: 'book', type: 'list' }]
+ * Key 2: [{ entity: 'issues', type: 'list' }]
+ *
+ * These following keys will match those above:
+ * - [{ entity: 'book' }] <- match on all book entities
+ * - [{ entity: 'issues' }] <- match on all issue entities
+ * - [{ type: 'list' }] <- match on all of type list
+ */
+
+export const bookQueries = {
+  all: () => ['books'] as const,
+  author: (authorId: string | undefined) =>
+    queryOptions({
+      queryKey: [...bookQueries.all(), 'author', authorId],
+      queryFn: authorId ? () => getAuthor(authorId) : skipToken,
+      staleTime: 1000 * 60 * 20, // set staleTime to 20mins
+    }),
+  list: (filter: string, page: number) =>
+    queryOptions({
+      queryKey: [...bookQueries.all(), 'list', { filter, page }],
+      /**
+       * Different ways of disabling queries:
+       * 1st way: old way of disabling query - not type safe :c
+       * enabled: !!filter,
+       *
+       * 2nd way: using skipToken also disables the query - but it is type safe c:
+       * queryFn: filter ? () => getBooks({ filter, page }) : skipToken,
+       *
+       * 3rd way: conditionally rendering this component, see above L48-L57
+       */
+      queryFn: () => getBooks({ filter, page }),
+      staleTime: 1000 * 60 * 2, // set staleTime to 2mins
+    }),
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: [...bookQueries.all(), 'detail', { id }],
+      queryFn: () => getBook(id),
+      staleTime: 1000 * 60 * 2, // set staleTime to 2mins
+    }),
 }

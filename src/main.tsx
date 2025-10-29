@@ -7,8 +7,19 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { bookQueries } from './api/openlibrary'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 2 * 1000, // 2 seconds
+    },
+  },
+})
+
+queryClient.setQueryDefaults(bookQueries.all(), {
+  staleTime: 2 * 60 * 1000, // 2 minutes
+})
 
 // Create a new router instance
 const router = createRouter({
