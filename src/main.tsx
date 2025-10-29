@@ -6,16 +6,27 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 import './styles.css'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { defaultShouldDehydrateQuery, QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import { del, get, set } from 'idb-keyval'
 import { bookQueries } from './api/openlibrary'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 2 * 1000, // 2 seconds
+      gcTime: 1000 * 60 * 60, // 1 hour
     },
   },
 })
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    queryMeta: { persist?: boolean }
+    mutationMeta: { persist?: boolean }
+  }
+}
 
 queryClient.setQueryDefaults(bookQueries.all(), {
   staleTime: 2 * 60 * 1000, // 2 minutes
@@ -43,6 +54,15 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const persister = createAsyncStoragePersister({
+  // storage: localStorage,
+  storage: {
+    getItem: get,
+    setItem: set,
+    removeItem: del,
+  },
+})
+
 // Render the app
 const rootElement = document.querySelector('#app')
 if (rootElement && !rootElement.innerHTML) {
@@ -50,9 +70,24 @@ if (rootElement && !rootElement.innerHTML) {
   await (await import('@/server/handlers')).worker.start()
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister,
+          dehydrateOptions: {
+            shouldDehydrateQuery: (query) => {
+              // opting into persisting queries that have the
+              // meta field set to true
+              return (
+                defaultShouldDehydrateQuery(query) &&
+                query.meta?.persist === true
+              )
+            },
+          },
+        }}
+      >
         <RouterProvider router={router} />
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </StrictMode>,
   )
 }

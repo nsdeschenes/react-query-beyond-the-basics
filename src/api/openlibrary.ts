@@ -138,6 +138,7 @@ export const bookQueries = {
        */
       queryFn: () => getBooks({ filter, page }),
       staleTime: 1000 * 60 * 2, // set staleTime to 2mins
+      meta: { persist: true },
     }),
   detail: (id: string) =>
     queryOptions({
