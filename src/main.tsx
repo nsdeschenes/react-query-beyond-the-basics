@@ -6,7 +6,11 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 import './styles.css'
-import { defaultShouldDehydrateQuery, QueryClient } from '@tanstack/react-query'
+import {
+  defaultShouldDehydrateQuery,
+  QueryClient,
+  useIsRestoring,
+} from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { del, get, set } from 'idb-keyval'
@@ -63,6 +67,12 @@ const persister = createAsyncStoragePersister({
   },
 })
 
+function PersistGate({ children }: { children: React.ReactNode }) {
+  const isRestoring = useIsRestoring()
+
+  return isRestoring ? null : children
+}
+
 // Render the app
 const rootElement = document.querySelector('#app')
 if (rootElement && !rootElement.innerHTML) {
@@ -86,7 +96,9 @@ if (rootElement && !rootElement.innerHTML) {
           },
         }}
       >
-        <RouterProvider router={router} />
+        <PersistGate>
+          <RouterProvider router={router} />
+        </PersistGate>
       </PersistQueryClientProvider>
     </StrictMode>,
   )
