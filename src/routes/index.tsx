@@ -71,7 +71,14 @@ function BookSearchOverview({
   setPage: (page: number) => void
 }) {
   const queryClient = useQueryClient()
-  const query = useQuery(bookQueries.list(filter, page))
+  const query = useQuery({
+    ...bookQueries.list(filter, page),
+    // Can also use this util from Query
+    // placeholderData: keepPreviousData,
+    placeholderData: (previousData) => {
+      return previousData?.filter === filter ? previousData : undefined
+    },
+  })
 
   if (query.status === 'pending') {
     if (query.fetchStatus === 'fetching') {
@@ -94,7 +101,10 @@ function BookSearchOverview({
         {query.data.numFound} records found
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        style={{ opacity: query.isPlaceholderData ? 0.5 : 1 }}
+      >
         {query.data.docs.map((book) => (
           <BookSearchItem
             key={book.id}
